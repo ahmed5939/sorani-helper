@@ -16,6 +16,11 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+      - name: Print Bun and Node versions
+        run: |
+          bun --version
+          node --version || true
+          npm --version || true
       - run: bun install
       - run: bun test
       - run: bun run build
@@ -31,6 +36,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Print Node and npm versions
+        run: |
+          node --version
+          npm --version
       - run: npm ci
       - run: npm run build
       - run: npm publish --registry=https://npm.pkg.github.com/
