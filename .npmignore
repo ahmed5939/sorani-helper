@@ -1,0 +1,25 @@
+# Source files (only ship compiled JS)
+src/
+test/
+*.test.ts
+*.test.js
+
+# Build config
+tsconfig.json
+jest.config.cjs
+jest.config.js
+
+# Development files
+.git/
+.gitignore
+.vscode/
+.idea/
+*.log
+node_modules/
+
+# Documentation that's not needed in package
+TEST_COVERAGE.md
+
+# OS files
+.DS_Store
+Thumbs.db

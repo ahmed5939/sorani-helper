@@ -1,0 +1,52 @@
+{
+  "name": "sorani-helper",
+  "version": "1.0.0",
+  "description": "TypeScript library for processing Central Kurdish (Sorani) text: Arabic-to-Kurdish conversion, keyboard layout mapping, validation, and input handling.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "type": "commonjs",
+  "files": [
+    "lib/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "bun test",
+    "prepublishOnly": "npm run build && npm test",
+    "lint": "echo 'No linter configured' && exit 0",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "kurdish",
+    "sorani",
+    "central-kurdish",
+    "krd",
+    "ckb",
+    "kurdistan",
+    "text-processing",
+    "i18n",
+    "l10n",
+    "input-validation",
+    "keyboard-layout",
+    "arabic-conversion",
+    "typescript"
+  ],
+  "author": "Ahmed Sabir <smmahmad04@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahmed5939/sorani-helper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ahmed5939/sorani-helper/issues"
+  },
+  "homepage": "https://github.com/ahmed5939/sorani-helper#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.5.6"
+  }
+}
