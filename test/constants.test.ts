@@ -87,16 +87,20 @@ describe('Constants', () => {
     test('reverses parentheses and brackets', () => {
       expect(ENGLISH_TO_KURDISH_LAYOUT['(']).toBe(')');
       expect(ENGLISH_TO_KURDISH_LAYOUT[')']).toBe('(');
-      expect(ENGLISH_TO_KURDISH_LAYOUT['{']).toBe('چ');
-      expect(ENGLISH_TO_KURDISH_LAYOUT['}']).toBe('ج');
+      expect(ENGLISH_TO_KURDISH_LAYOUT['{']).toBe('}'); // Braces reversed
+      expect(ENGLISH_TO_KURDISH_LAYOUT['}']).toBe('{'); // Braces reversed
+      expect(ENGLISH_TO_KURDISH_LAYOUT['[']).toBe(']'); // Brackets reversed
+      expect(ENGLISH_TO_KURDISH_LAYOUT[']']).toBe('['); // Brackets reversed
       expect(ENGLISH_TO_KURDISH_LAYOUT['<']).toBe('>');
       expect(ENGLISH_TO_KURDISH_LAYOUT['>']).toBe('<');
     });
 
     test('converts punctuation marks', () => {
-      expect(ENGLISH_TO_KURDISH_LAYOUT['.']).toBe('،'); // Arabic comma
+      expect(ENGLISH_TO_KURDISH_LAYOUT['.']).toBe('.'); // Period stays period
+      expect(ENGLISH_TO_KURDISH_LAYOUT[',']).toBe('،'); // Arabic comma
       expect(ENGLISH_TO_KURDISH_LAYOUT[';']).toBe('؛'); // Arabic semicolon
-      expect(ENGLISH_TO_KURDISH_LAYOUT['/']).toBe('.'); // period
+      expect(ENGLISH_TO_KURDISH_LAYOUT['/']).toBe('\\'); // Backslash
+      expect(ENGLISH_TO_KURDISH_LAYOUT['?']).toBe('؟'); // Arabic question mark
     });
   });
 

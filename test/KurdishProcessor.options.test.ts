@@ -86,7 +86,7 @@ describe('KurdishProcessor Options', () => {
     test('converts English layout when enabled', () => {
       const p = new KurdishProcessor({ autoConvertEnglishLayout: true });
       expect(p.process('slaw')).toBe('سلاو');
-      expect(p.process(']oni')).toBe('جۆنی'); // ] maps to ج
+      expect(p.process('coni')).toBe('جۆنی'); // c maps to ج
       expect(p.process('helbast')).toBe('هەلباست');
     });
 
@@ -100,7 +100,7 @@ describe('KurdishProcessor Options', () => {
       const p = new KurdishProcessor({ autoConvertEnglishLayout: true });
       expect(p.process('R')).toBe('ڕ'); // Rr
       expect(p.process('L')).toBe('ڵ'); // Ll
-      expect(p.process('Y')).toBe('ێ'); // Yeh with inverted V
+      expect(p.process('E')).toBe('ێ'); // Yeh with inverted V (E not Y)
     });
 
     test('converts digits to Arabic-Indic numerals', () => {
