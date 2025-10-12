@@ -15,117 +15,122 @@ export const ARABIC_TO_KURDISH_MAP: Record<string, string> = {
 };
 
 // English QWERTY to Kurdish keyboard layout (Standard Central Kurdish - کوردی شێوازی نیگارگیری)
-// Based on official Kurdish Standard keyboard layout
+// Complete Windows/Linux Central Kurdish keyboard layout mapping
+// Based on Unicode CLDR and Windows KBDKURD
+// Reference: https://www.unicode.org/cldr/charts/40/keyboards/layouts/ckb.html
 export const ENGLISH_TO_KURDISH_LAYOUT: Record<string, string> = {
-  // Number row (unshifted) - Arabic-Indic numerals
-  '`': '‍', // Zero-width joiner
-  '1': '١', // U+0661
-  '2': '٢', // U+0662
-  '3': '٣', // U+0663
-  '4': '٤', // U+0664
-  '5': '٥', // U+0665
-  '6': '٦', // U+0666
-  '7': '٧', // U+0667
-  '8': '٨', // U+0668
-  '9': '٩', // U+0669
-  '0': '٠', // U+0660
+  // ============ NUMBER ROW ============
+  // Unshifted
+  '`': '',
+  '1': '١', // U+0661 Arabic-Indic digit 1
+  '2': '٢', // U+0662 Arabic-Indic digit 2
+  '3': '٣', // U+0663 Arabic-Indic digit 3
+  '4': '٤', // U+0664 Arabic-Indic digit 4
+  '5': '٥', // U+0665 Arabic-Indic digit 5
+  '6': '٦', // U+0666 Arabic-Indic digit 6
+  '7': '٧', // U+0667 Arabic-Indic digit 7
+  '8': '٨', // U+0668 Arabic-Indic digit 8
+  '9': '٩', // U+0669 Arabic-Indic digit 9
+  '0': '٠', // U+0660 Arabic-Indic digit 0
   '-': '-',
   '=': '=',
-  
-  // Number row (shifted)
-  '~': '‌', // Zero-width non-joiner
+  // Shifted
+  '~': '~',
   '!': '!',
   '@': '@',
   '#': '#',
   '$': '$',
-  '%': '%',
-  '^': '×',
+  '%': '٪', // U+066A Arabic percent sign
+  '^': '^',
   '&': '&',
   '*': '*',
-  '(': ')',  // Parentheses reversed
-  ')': '(',  // Parentheses reversed
-  '_': 'ـ',  // Tatweel/Kashida
+  '(': ')', // Note: Reversed
+  ')': '(', // Note: Reversed
+  '_': '_',
   '+': '+',
-  
-  // First letter row (unshifted) - from left to right on QWERTY
-  'q': 'ق', // U+0642
-  'w': 'و', // U+0648
+
+  // ============ TOP LETTER ROW (QWERTY) ============
+  // Unshifted
+  'q': 'ق', // U+0642 Qaf
+  'w': 'و', // U+0648 Waw
   'e': 'ە', // U+06D5 Kurdish E
-  'r': 'ر', // U+0631
-  't': 'ت', // U+062A
-  'y': 'ی', // U+06CC
-  'u': 'ئ', // U+0626
-  'i': 'ی', // U+06CC
-  'o': 'ۆ', // U+06C6 Kurdish O (ۆ)
-  'p': 'پ', // U+067E
-  '[': 'چ', // U+0686
-  ']': 'ج', // U+062C
+  'r': 'ر', // U+0631 Reh
+  't': 'ت', // U+062A Teh
+  'y': 'ی', // U+06CC Kurdish Yeh
+  'u': 'ئ', // U+0626 Yeh with hamza above (HAMZA KEY!)
+  'i': 'ی', // U+06CC Kurdish Yeh
+  'o': 'ۆ', // U+06C6 Kurdish O (Waw with ring)
+  'p': 'پ', // U+067E Peh
+  '[': ']', // Bracket (reversed)
+  ']': '[', // Bracket (reversed)
   '\\': '\\',
-  
-  // First letter row (shifted)
-  'Q': 'ق',
-  'W': 'و',
-  'E': 'ە',
-  'R': 'ڕ', // U+0695 Kurdish Rr
-  'T': 'ت', // U+062A
-  'Y': 'ێ', // U+06CE Kurdish Yeh with small v
-  'U': 'ء', // Hamza
-  'I': 'ی',
-  'O': '[',
-  'P': ']',
-  '{': 'چ',
-  '}': 'ج',
+  // Shifted
+  'Q': 'ٌ', // U+064C Arabic dammatan
+  'W': 'ّ', // U+0651 Arabic shadda
+  'E': 'ێ', // U+06CE Kurdish Yeh with inverted V above
+  'R': 'ڕ', // U+0695 Kurdish Rr (Reh with small V below)
+  'T': 'ث', // U+062B Theh (Arabic letter)
+  'Y': 'ی', // U+06CC Kurdish Yeh (duplicate)
+  'U': 'وو', // Double Waw
+  'I': 'ى', // U+0649 Alif maksura
+  'O': 'ۆ', // U+06C6 Kurdish O (duplicate)
+  'P': 'پ', // U+067E Peh (duplicate)
+  '{': '}', // Brace (reversed)
+  '}': '{', // Brace (reversed)
   '|': '|',
-  
-  // Second letter row (unshifted) - from left to right on ASDF
-  'a': 'ا', // U+0627
-  's': 'س', // U+0633
-  'd': 'د', // U+062F
-  'f': 'ف', // U+0641
-  'g': 'گ', // U+06AF Kurdish G
-  'h': 'ه', // U+0647
-  'j': 'ژ', // U+0698 Kurdish Jh/Zh
-  'k': 'ک', // U+06A9 Kurdish K
-  'l': 'ل', // U+0644
+
+  // ============ MIDDLE ROW (ASDF) ============
+  // Unshifted
+  'a': 'ا', // U+0627 Alif
+  's': 'س', // U+0633 Seen
+  'd': 'د', // U+062F Dal
+  'f': 'ف', // U+0641 Feh
+  'g': 'گ', // U+06AF Kurdish Gaf
+  'h': 'ه', // U+0647 Heh
+  'j': 'ژ', // U+0698 Kurdish Jeh (Reh with three dots above)
+  'k': 'ک', // U+06A9 Kurdish Kaf
+  'l': 'ل', // U+0644 Lam
   ';': '؛', // U+061B Arabic semicolon
-  "'": '"',
-  
-  // Second letter row (shifted)
-  'A': 'آ', // Alif with Madda
+  "'": 'ع', // U+0639 Ain
+  // Shifted
+  'A': 'ئ', // U+0626 Yeh with hamza above
   'S': 'ش', // U+0634 Sheen
-  'D': 'د',
-  'F': 'ف',
-  'G': 'گ',
-  'H': 'ح', // U+062D Haa
-  'J': 'ژ', // U+0698 Kurdish Jh/Zh
-  'K': 'ک',
-  'L': 'ڵ', // U+06B5 Kurdish Ll
+  'D': 'ذ', // U+0630 Thal
+  'F': 'ف', // U+0641 Feh (duplicate)
+  'G': 'گ', // U+06AF Kurdish Gaf (duplicate)
+  'H': 'ح', // U+062D Hah
+  'J': 'ژ', // U+0698 Kurdish Jeh (duplicate)
+  'K': 'ک', // U+06A9 Kurdish Kaf (duplicate)
+  'L': 'ڵ', // U+06B5 Kurdish Ll (Lam with small V)
   ':': ':',
-  '"': '"',
-  
-  // Third letter row (unshifted) - from left to right on ZXCV
-  'z': 'ز', // U+0632
-  'x': 'ر', // U+0631
-  'c': 'ج', // U+062C
-  'v': 'ح', // U+062D
-  'b': 'ج', // U+062C
-  'n': 'ب', // U+0628
-  'm': 'ن', // U+0646
-  ',': 'م', // U+0645
-  '.': '،', // U+060C Arabic comma
-  '/': '.',
-  
-  // Third letter row (shifted)
-  'Z': 'ز',
-  'X': 'ر',
-  'C': 'ج',
-  'V': 'ح',
-  'B': 'ج',
-  'N': 'ب',
-  'M': 'ن',
-  '<': '>',  // Angle brackets reversed
-  '>': '<',  // Angle brackets reversed
-  '?': '/',
+  '"': 'غ', // U+063A Ghain
+
+  // ============ BOTTOM ROW (ZXCV) ============
+  // Unshifted
+  'z': 'ز', // U+0632 Zain
+  'x': 'خ', // U+062E Khah
+  'c': 'ج', // U+062C Jeem
+  'v': 'ڤ', // U+06A4 Kurdish Veh
+  'b': 'ب', // U+0628 Beh
+  'n': 'ن', // U+0646 Noon
+  'm': 'م', // U+0645 Meem
+  ',': '،', // U+060C Arabic comma
+  '.': '.',
+  '/': '\\',
+  // Shifted
+  'Z': 'ض', // U+0636 Dad
+  'X': 'غ', // U+063A Ghain
+  'C': 'چ', // U+0686 Tcheh
+  'V': 'ڤ', // U+06A4 Kurdish Veh (duplicate)
+  'B': 'ب', // U+0628 Beh (duplicate)
+  'N': 'ن', // U+0646 Noon (duplicate)
+  'M': 'م', // U+0645 Meem (duplicate)
+  '<': '>', // Angle bracket (reversed)
+  '>': '<', // Angle bracket (reversed)
+  '?': '؟', // U+061F Arabic question mark
+
+  // ============ SPACE BAR ============
+  ' ': ' ', // Space remains space
 };
 
 // Characters to reject (non-Kurdish scripts)
