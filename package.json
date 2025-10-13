@@ -1,5 +1,5 @@
 {
-  "name": "sorani-helper",
+  "name": "@ahmed5939/sorani-helper",
   "version": "1.0.0",
   "description": "TypeScript library for processing Central Kurdish (Sorani) text: Arabic-to-Kurdish conversion, keyboard layout mapping, validation, and input handling.",
   "main": "lib/index.js",
