@@ -1,49 +1,22 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
-
-name: Node.js Package
-
+# Publish to npm whenever a tag is pushed
+name: Publish to npm
 on:
-  release:
-    types: [created]
-  workflow_dispatch:
-
+  push:
+    tags: v*
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      - name: Print Bun and Node versions
-        run: |
-          bun --version
-          node --version || true
-          npm --version || true
-      - run: bun install
-      - run: bun test
-      - run: bun run build
-
-  publish-gpr:
-    needs: build
-    runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
-          registry-url: https://npm.pkg.github.com/
-          scope: '@ahmed5939'
-      - name: Print Node and npm versions
-        run: |
-          node --version
-          npm --version
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
       - run: npm ci
-      - run: npm run build
-      - run: npm publish
+      - run: npm test
+      - run: npm publish --provenance --ignore-scripts
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
