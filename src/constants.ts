@@ -61,18 +61,18 @@ export const ARABIC_TO_KURDISH_MAP: Record<string, string> = {
 // Reference: https://www.unicode.org/cldr/charts/40/keyboards/layouts/ckb.html
 export const ENGLISH_TO_KURDISH_LAYOUT: Record<string, string> = {
   // ---------- NUMBER ROW ----------
-  // Unshifted
+  // Unshifted - Arabic-Indic numerals
   "`": "",
-  "1": "1",
-  "2": "2",
-  "3": "3",
-  "4": "4",
-  "5": "5",
-  "6": "6",
-  "7": "7",
-  "8": "8",
-  "9": "9",
-  "0": "0",
+  "1": "١",
+  "2": "٢",
+  "3": "٣",
+  "4": "٤",
+  "5": "٥",
+  "6": "٦",
+  "7": "٧",
+  "8": "٨",
+  "9": "٩",
+  "0": "٠",
   "-": "-",
   "=": "=",
   // Shifted
@@ -99,7 +99,7 @@ export const ENGLISH_TO_KURDISH_LAYOUT: Record<string, string> = {
   t: "ت",
   y: "ی",
   u: "ئ", // Hamza key
-  i: "ح",
+  i: "ی", // Yeh
   o: "ۆ",
   p: "پ",
   "[": "]", // Reversed brackets

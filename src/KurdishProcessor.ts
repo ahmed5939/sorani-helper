@@ -98,22 +98,21 @@ export class KurdishProcessor {
     const allowedSet = this.allowedSet!;
     const emojiMatches = this.options.allowEmojis ? text.match(EMOJI_REGEX) || [] : [];
 
-    // Single pass: filter characters without splitting string
-    let result = '';
-    let emojiIndex = 0;
-    
-    for (let i = 0; i < text.length; i++) {
-      const char = text[i];
-      
-      // Handle emoji matching - simplified approach
-      if (this.options.allowEmojis && /[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u.test(char)) {
-        result += emojiMatches[emojiIndex++] || '';
-      } else if (allowedSet.has(char)) {
-        result += char;
-      }
+    // Replace emojis with placeholder first, then filter
+    let filtered = text
+      .replace(EMOJI_REGEX, '※')
+      .split('')
+      .filter(char => char === '※' || allowedSet.has(char))
+      .join('');
+
+    if (this.options.allowEmojis) {
+      let emojiIndex = 0;
+      filtered = filtered.replace(/※/g, () => emojiMatches[emojiIndex++] || '');
+    } else {
+      filtered = filtered.replace(/※/g, '');
     }
 
-    return result;
+    return filtered;
   }
 
   validate(input: string): ValidationResult {
@@ -181,18 +180,23 @@ export class KurdishProcessor {
 
   private filterText(text: string): string {
     const allowedSet = this.allowedSet!;
-    
-    // Single pass: filter characters without splitting string
-    let result = '';
-    
-    for (let i = 0; i < text.length; i++) {
-      const char = text[i];
-      if (allowedSet.has(char)) {
-        result += char;
-      }
+    const emojiMatches = this.options.allowEmojis ? text.match(EMOJI_REGEX) || [] : [];
+
+    // Replace emojis with placeholder first, then filter
+    let filtered = text
+      .replace(EMOJI_REGEX, '※')
+      .split('')
+      .filter(char => char === '※' || allowedSet.has(char))
+      .join('');
+
+    if (this.options.allowEmojis) {
+      let emojiIndex = 0;
+      filtered = filtered.replace(/※/g, () => emojiMatches[emojiIndex++] || '');
+    } else {
+      filtered = filtered.replace(/※/g, '');
     }
 
-    return result;
+    return filtered;
   }
 
   private escapeRegExp(string: string): string {
