@@ -1,141 +1,188 @@
-// Standard Central Kurdish 33-letter alphabet (KRG approved)
-export const KURDISH_SORANI_33_LETTERS = "ئابپتجچحخدرڕزژسشعغفڤقکگلڵمنوۆهەیێ";
+// ==================== Central Kurdish Alphabet ====================
+// Standard 33-letter Central Kurdish (Sorani) alphabet, approved by KRG
+export const KURDISH_SORANI_33_LETTERS =
+  "ئابپتجچحخدرڕزژسشعغفڤقکگلڵمنوۆهەیێ";
 
-// Arabic to Kurdish mappings
+// ==================== Arabic → Kurdish Conversion Mappings ====================
+// The order of replacements is important:
+//   - Multi-character patterns (diacritics or ligatures) must be processed first.
+//   - Then single-character substitutions are applied.
+export const ARABIC_TO_KURDISH_REPLACEMENTS: Array<[RegExp, string]> = [
+  // ---------- MULTI-CHARACTER COMBINATIONS (process first) ----------
+  [/لآ/g, "ڵا"], // "La" + alif madda → Kurdish "ڵا" (lla)
+  [/لاَ/g, "ڵا"], // "La" + alif with fatha → Kurdish "ڵا" (lla)
+  [/لَ/g, "ڵ"], // Lam with fatha → Kurdish retroflex "ڵ"
+  [/وَ/g, "ۆ"], // Waw with fatha → Kurdish "ۆ" (o)
+  [/یَ/g, "ێ"], // Yeh with fatha → Kurdish "ێ" (ê)
+  [/ىَ/g, "ێ"], // Alif maqṣūra with fatha → Kurdish "ێ"
+  [/رِ/g, "ڕ"], // Ra with kasra → Kurdish "ڕ" (voiced retroflex r)
+
+  // ---------- SINGLE CHARACTER MAPPINGS ----------
+  // Arabic letters and their standardized Kurdish equivalents
+  [/ك/g, "ک"], // Arabic Kaf → Kurdish Kaf
+  [/ي/g, "ی"], // Arabic Yeh → Kurdish Yeh
+  [/ى/g, "ی"], // Alif maqṣūra → Kurdish Yeh
+  [/ة/g, "ه‌"], // Tā’ marbūṭa → Heh + ZWNJ (KRG standard form)
+  [/أ/g, "ا"], // Alif with Hamza above → Alif
+  [/إ/g, "ا"], // Alif with Hamza below → Alif
+  [/آ/g, "ێ"], // Alif with madda → Kurdish Ê
+  [/ؤ/g, "ۆ"], // Waw with Hamza → Kurdish O
+  [/ھ/g, "ه"], // Heh Doachashmee → Standard Heh (U+0647)
+  [/ذ/g, "ژ"], // Thal → Kurdish Zhe
+  [/ث/g, "پ"], // Tha → Kurdish Pe (approximation)
+  [/ط/g, "گ"], // Ta → Kurdish Gaf (approximation for Kurdish orthography)
+  [/ض/g, "چ"], // Dad → Kurdish Che (approximation)
+  [/ظ/g, "ڤ"], // Za → Kurdish Ve
+  [/ء/g, "‌و"], // Hamza → ZWNJ + Waw
+  [/'/g, "‌"], // ASCII apostrophe → Zero Width Non-Joiner (ZWNJ)
+
+  // ---------- CHARACTERS THAT STAY UNCHANGED ----------
+  [/ص/g, "ص"], // Arabic Ṣād remains identical in Kurdish
+];
+
+// ==================== Legacy Simple Mapping (Deprecated) ====================
+// Maintained for backward compatibility.
+// Use ARABIC_TO_KURDISH_REPLACEMENTS for accurate transformations.
 export const ARABIC_TO_KURDISH_MAP: Record<string, string> = {
-  'ك': 'ک', // U+0643 Arabic Kaf → U+06A9 Kurdish Kaf
-  'ي': 'ی', // U+064A Arabic Yeh → U+06CC Kurdish Yeh
-  'ى': 'ی', // Arabic Alif Maksura → Kurdish Yeh
-  'ة': 'ه', // Arabic Taa Marbutah → Heh
-  'أ': 'ا', // Arabic Alif with Hamza above → Alif
-  'إ': 'ا', // Arabic Alif with Hamza below → Alif
-  'آ': 'ا', // Arabic Alif with Madda → Alif
-  'ؤ': 'و', // Arabic Waw with Hamza → Waw
-  'ھ': 'ه', // U+06BE Arabic Heh Doachashmee → U+0647 (as per KRG standard)
+  ك: "ک",
+  ي: "ی",
+  ى: "ی",
+  ة: "ه", // Simplified: uses plain Heh (without ZWNJ)
+  أ: "ا",
+  إ: "ا",
+  آ: "ا", // Simplified to plain Alif (no Ê)
+  ؤ: "و", // Simplified to Waw
+  ھ: "ه",
 };
 
-// English QWERTY to Kurdish keyboard layout (Standard Central Kurdish - کوردی شێوازی نیگارگیری)
-// Complete Windows/Linux Central Kurdish keyboard layout mapping
-// Based on Unicode CLDR and Windows KBDKURD
+// ==================== English → Kurdish Keyboard Layout ====================
+// Complete Central Kurdish (Sorani) keyboard layout for Windows/Linux
+// Based on the Unicode CLDR and official Windows KBDKURD layout
 // Reference: https://www.unicode.org/cldr/charts/40/keyboards/layouts/ckb.html
 export const ENGLISH_TO_KURDISH_LAYOUT: Record<string, string> = {
-  // ============ NUMBER ROW ============
+  // ---------- NUMBER ROW ----------
   // Unshifted
-  '`': '',
-  '1': '١', // U+0661 Arabic-Indic digit 1
-  '2': '٢', // U+0662 Arabic-Indic digit 2
-  '3': '٣', // U+0663 Arabic-Indic digit 3
-  '4': '٤', // U+0664 Arabic-Indic digit 4
-  '5': '٥', // U+0665 Arabic-Indic digit 5
-  '6': '٦', // U+0666 Arabic-Indic digit 6
-  '7': '٧', // U+0667 Arabic-Indic digit 7
-  '8': '٨', // U+0668 Arabic-Indic digit 8
-  '9': '٩', // U+0669 Arabic-Indic digit 9
-  '0': '٠', // U+0660 Arabic-Indic digit 0
-  '-': '-',
-  '=': '=',
+  "`": "",
+  "1": "1",
+  "2": "2",
+  "3": "3",
+  "4": "4",
+  "5": "5",
+  "6": "6",
+  "7": "7",
+  "8": "8",
+  "9": "9",
+  "0": "0",
+  "-": "-",
+  "=": "=",
   // Shifted
-  '~': '~',
-  '!': '!',
-  '@': '@',
-  '#': '#',
-  '$': '$',
-  '%': '٪', // U+066A Arabic percent sign
-  '^': '^',
-  '&': '&',
-  '*': '*',
-  '(': ')', // Note: Reversed
-  ')': '(', // Note: Reversed
-  '_': '_',
-  '+': '+',
+  "~": "~",
+  "!": "!",
+  "@": "@",
+  "#": "#",
+  "$": "$",
+  "%": "٪", // Arabic percent sign
+  "^": "^",
+  "&": "&",
+  "*": "*",
+  "(": ")", // Reversed order on keyboard
+  ")": "(", // Reversed order on keyboard
+  "_": "_",
+  "+": "+",
 
-  // ============ TOP LETTER ROW (QWERTY) ============
+  // ---------- TOP LETTER ROW ----------
   // Unshifted
-  'q': 'ق', // U+0642 Qaf
-  'w': 'و', // U+0648 Waw
-  'e': 'ە', // U+06D5 Kurdish E
-  'r': 'ر', // U+0631 Reh
-  't': 'ت', // U+062A Teh
-  'y': 'ی', // U+06CC Kurdish Yeh
-  'u': 'ئ', // U+0626 Yeh with hamza above (HAMZA KEY!)
-  'i': 'ی', // U+06CC Kurdish Yeh
-  'o': 'ۆ', // U+06C6 Kurdish O (Waw with ring)
-  'p': 'پ', // U+067E Peh
-  '[': ']', // Bracket (reversed)
-  ']': '[', // Bracket (reversed)
-  '\\': '\\',
+  q: "ق",
+  w: "و",
+  e: "ە",
+  r: "ر",
+  t: "ت",
+  y: "ی",
+  u: "ئ", // Hamza key
+  i: "ح",
+  o: "ۆ",
+  p: "پ",
+  "[": "]", // Reversed brackets
+  "]": "[",
+  "\\": "\\",
   // Shifted
-  'Q': 'ٌ', // U+064C Arabic dammatan
-  'W': 'ّ', // U+0651 Arabic shadda
-  'E': 'ێ', // U+06CE Kurdish Yeh with inverted V above
-  'R': 'ڕ', // U+0695 Kurdish Rr (Reh with small V below)
-  'T': 'ث', // U+062B Theh (Arabic letter)
-  'Y': 'ی', // U+06CC Kurdish Yeh (duplicate)
-  'U': 'وو', // Double Waw
-  'I': 'ى', // U+0649 Alif maksura
-  'O': 'ۆ', // U+06C6 Kurdish O (duplicate)
-  'P': 'پ', // U+067E Peh (duplicate)
-  '{': '}', // Brace (reversed)
-  '}': '{', // Brace (reversed)
-  '|': '|',
+  Q: "ٌ",
+  W: "وو",
+  E: "ێ",
+  R: "ڕ",
+  T: "ث",
+  Y: "ی",
+  U: "وو",
+  I: "ع",
+  O: "ۆ",
+  P: "پ",
+  "{": "}",
+  "}": "{",
+  "|": "|",
 
-  // ============ MIDDLE ROW (ASDF) ============
+  // ---------- HOME ROW ----------
   // Unshifted
-  'a': 'ا', // U+0627 Alif
-  's': 'س', // U+0633 Seen
-  'd': 'د', // U+062F Dal
-  'f': 'ف', // U+0641 Feh
-  'g': 'گ', // U+06AF Kurdish Gaf
-  'h': 'ه', // U+0647 Heh
-  'j': 'ژ', // U+0698 Kurdish Jeh (Reh with three dots above)
-  'k': 'ک', // U+06A9 Kurdish Kaf
-  'l': 'ل', // U+0644 Lam
-  ';': '؛', // U+061B Arabic semicolon
-  "'": 'ع', // U+0639 Ain
+  a: "ا",
+  s: "س",
+  d: "د",
+  f: "ف",
+  g: "گ",
+  h: "ه",
+  j: "ژ",
+  k: "ک",
+  l: "ل",
+  ";": "؛",
+  "'": "ع",
   // Shifted
-  'A': 'ئ', // U+0626 Yeh with hamza above
-  'S': 'ش', // U+0634 Sheen
-  'D': 'ذ', // U+0630 Thal
-  'F': 'ف', // U+0641 Feh (duplicate)
-  'G': 'گ', // U+06AF Kurdish Gaf (duplicate)
-  'H': 'ح', // U+062D Hah
-  'J': 'ژ', // U+0698 Kurdish Jeh (duplicate)
-  'K': 'ک', // U+06A9 Kurdish Kaf (duplicate)
-  'L': 'ڵ', // U+06B5 Kurdish Ll (Lam with small V)
-  ':': ':',
-  '"': 'غ', // U+063A Ghain
+  A: "ئ",
+  S: "ش",
+  D: "ذ",
+  F: "ف",
+  G: "غ",
+  H: "ه",
+  J: "ژ",
+  K: "ک",
+  L: "ڵ",
+  ":": ":",
+  '"': '"',
 
-  // ============ BOTTOM ROW (ZXCV) ============
+  // ---------- BOTTOM ROW ----------
   // Unshifted
-  'z': 'ز', // U+0632 Zain
-  'x': 'خ', // U+062E Khah
-  'c': 'ج', // U+062C Jeem
-  'v': 'ڤ', // U+06A4 Kurdish Veh
-  'b': 'ب', // U+0628 Beh
-  'n': 'ن', // U+0646 Noon
-  'm': 'م', // U+0645 Meem
-  ',': '،', // U+060C Arabic comma
-  '.': '.',
-  '/': '\\',
+  z: "ز",
+  x: "خ",
+  c: "ج",
+  v: "ڤ",
+  b: "ب",
+  n: "ن",
+  m: "م",
+  ",": "،",
+  ".": ".",
+  "/": "\\",
   // Shifted
-  'Z': 'ض', // U+0636 Dad
-  'X': 'غ', // U+063A Ghain
-  'C': 'چ', // U+0686 Tcheh
-  'V': 'ڤ', // U+06A4 Kurdish Veh (duplicate)
-  'B': 'ب', // U+0628 Beh (duplicate)
-  'N': 'ن', // U+0646 Noon (duplicate)
-  'M': 'م', // U+0645 Meem (duplicate)
-  '<': '>', // Angle bracket (reversed)
-  '>': '<', // Angle bracket (reversed)
-  '?': '؟', // U+061F Arabic question mark
+  Z: "ض",
+  X: "غ",
+  C: "چ",
+  V: "ڤ",
+  B: "ب",
+  N: "ن",
+  M: "م",
+  "<": ">",
+  ">": "<",
+  "?": "؟",
 
-  // ============ SPACE BAR ============
-  ' ': ' ', // Space remains space
+  // ---------- SPACEBAR ----------
+  " ": " ", // Space remains unchanged
 };
 
-// Characters to reject (non-Kurdish scripts)
+// ==================== Validation & Rejection Patterns ====================
+// Reject Arabic variants that differ from KRG Kurdish orthography
 export const ARABIC_VARIANTS_TO_REJECT = /[كيىةؤأإآھ]/u;
-export const NON_KURDISH_SCRIPTS = /[A-Za-z\u4E00-\u9FFF\u0590-\u05FF\u0750-\u077F]/u;
 
-// Emoji regex - matches common emoji ranges
-export const EMOJI_REGEX = /[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{FE00}-\u{FE0F}]|[\u{1F000}-\u{1F02F}]|[\u{1F0A0}-\u{1F0FF}]|[\u{1F100}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F910}-\u{1F96B}]|[\u{1F980}-\u{1F9E0}]/gu;
+// Reject non-Kurdish scripts (Latin, Chinese, Hebrew, etc.)
+export const NON_KURDISH_SCRIPTS =
+  /[A-Za-z\u4E00-\u9FFF\u0590-\u05FF\u0750-\u077F]/u;
+
+// ==================== Emoji Pattern ====================
+// Matches most common emojis and variation selectors
+export const EMOJI_REGEX =
+  /[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{FE00}-\u{FE0F}]|[\u{1F000}-\u{1F02F}]|[\u{1F0A0}-\u{1F0FF}]|[\u{1F100}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F910}-\u{1F96B}]|[\u{1F980}-\u{1F9E0}]/gu;

@@ -4,15 +4,42 @@ import {
 } from './types';
 import {
   KURDISH_SORANI_33_LETTERS,
-  ARABIC_TO_KURDISH_MAP,
+  ARABIC_TO_KURDISH_REPLACEMENTS,
   ENGLISH_TO_KURDISH_LAYOUT,
   ARABIC_VARIANTS_TO_REJECT,
   NON_KURDISH_SCRIPTS,
   EMOJI_REGEX,
 } from './constants';
 
+// Pre-built lookup map for Arabic to Kurdish conversion
+function buildArabicReplacementMap(): Map<string, string> {
+  const map = new Map<string, string>();
+  for (const [pattern, replacement] of ARABIC_TO_KURDISH_REPLACEMENTS) {
+    map.set(pattern.source, replacement);
+  }
+  return map;
+}
+
+const ARABIC_REPLACEMENT_MAP = buildArabicReplacementMap();
+
+// Build a single combined regex for Arabic conversion
+function buildCombinedArabicRegex(): RegExp {
+  const patterns = ARABIC_TO_KURDISH_REPLACEMENTS.map(([p]) => p.source);
+  return new RegExp(patterns.join('|'), 'gu');
+}
+
+const COMBINED_ARABIC_REGEX = buildCombinedArabicRegex();
+
+// Pre-built static sets for fast character validation
+const KURDISH_SET = new Set(KURDISH_SORANI_33_LETTERS);
+const DIGITS_SET = new Set('0123456789٠١٢٣٤٥٦٧٨٩');
+const PUNCTUATION_SET = new Set('.,;:!?()\\-"\'\'،؛؟«»[]{}');
+const SPACE_SET = new Set(' \t\n');
+const LATIN_SET = new Set('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+
 export class KurdishProcessor {
   private options: Required<KurdishProcessorOptions>;
+  private allowedSet: Set<string> | null = null;
 
   constructor(options: KurdishProcessorOptions = {}) {
     this.options = {
@@ -26,6 +53,23 @@ export class KurdishProcessor {
       strict: true,
       ...options,
     };
+    this.rebuildAllowedSet();
+  }
+
+  private rebuildAllowedSet(): void {
+    this.allowedSet = new Set(KURDISH_SET);
+    if (this.options.allowDigits) {
+      DIGITS_SET.forEach(c => this.allowedSet!.add(c));
+    }
+    if (this.options.allowPunctuation) {
+      PUNCTUATION_SET.forEach(c => this.allowedSet!.add(c));
+    }
+    if (this.options.allowSpaces) {
+      SPACE_SET.forEach(c => this.allowedSet!.add(c));
+    }
+    if (!this.options.blockOtherScripts) {
+      LATIN_SET.forEach(c => this.allowedSet!.add(c));
+    }
   }
 
   process(input: string): string {
@@ -51,33 +95,25 @@ export class KurdishProcessor {
   }
 
   private filterByAllowedOptions(text: string): string {
-    let allowed = KURDISH_SORANI_33_LETTERS;
-    if (this.options.allowDigits) allowed += '0123456789٠١٢٣٤٥٦٧٨٩';
-    if (this.options.allowPunctuation) allowed += '.,;:!?()\\-"\'\'،؛؟«»[]{}';
-    if (this.options.allowSpaces) allowed += ' \t\n';
-    
-    // When blockOtherScripts is false, also allow Latin and other common scripts
-    if (!this.options.blockOtherScripts) {
-      allowed += 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    }
-
-    const allowedSet = new Set(allowed);
+    const allowedSet = this.allowedSet!;
     const emojiMatches = this.options.allowEmojis ? text.match(EMOJI_REGEX) || [] : [];
 
-    let filtered = text
-      .replace(EMOJI_REGEX, '※')
-      .split('')
-      .filter(char => char === '※' || allowedSet.has(char))
-      .join('');
-
-    if (this.options.allowEmojis) {
-      let emojiIndex = 0;
-      filtered = filtered.replace(/※/g, () => emojiMatches[emojiIndex++] || '');
-    } else {
-      filtered = filtered.replace(/※/g, '');
+    // Single pass: filter characters without splitting string
+    let result = '';
+    let emojiIndex = 0;
+    
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      
+      // Handle emoji matching - simplified approach
+      if (this.options.allowEmojis && /[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u.test(char)) {
+        result += emojiMatches[emojiIndex++] || '';
+      } else if (allowedSet.has(char)) {
+        result += char;
+      }
     }
 
-    return filtered;
+    return result;
   }
 
   validate(input: string): ValidationResult {
@@ -99,24 +135,14 @@ export class KurdishProcessor {
       errors.push('Contains non-Kurdish script characters');
     }
 
-    // Build allowed character set
-    const allowedChars = new Set(KURDISH_SORANI_33_LETTERS);
-    if (this.options.allowDigits) {
-      '0123456789٠١٢٣٤٥٦٧٨٩'.split('').forEach(c => allowedChars.add(c));
-    }
-    if (this.options.allowPunctuation) {
-      '.,;:!?()-"\'،؛؟«»[]{}'.split('').forEach(c => allowedChars.add(c));
-    }
-    if (this.options.allowSpaces) {
-      ' \t\n'.split('').forEach(c => allowedChars.add(c));
-    }
-
+    // Use pre-built allowed set
+    const allowedChars = this.allowedSet!;
     const emojiMatches = converted.match(EMOJI_REGEX) || [];
     const textWithoutEmojis = converted.replace(EMOJI_REGEX, '');
 
-    // Check if all non-emoji characters are allowed
-    for (const char of textWithoutEmojis) {
-      if (!allowedChars.has(char)) {
+    // Check if all non-emoji characters are allowed - optimized loop
+    for (let i = 0; i < textWithoutEmojis.length; i++) {
+      if (!allowedChars.has(textWithoutEmojis[i])) {
         errors.push('Contains invalid characters');
         break;
       }
@@ -134,43 +160,39 @@ export class KurdishProcessor {
   }
 
   private convertArabicToKurdish(text: string): string {
+    // Apply all Arabic to Kurdish replacements in order
+    // Multi-character patterns must be processed first, then single characters
     let result = text;
-    for (const [arabic, kurdish] of Object.entries(ARABIC_TO_KURDISH_MAP)) {
-      result = result.replace(new RegExp(arabic, 'g'), kurdish);
+    for (const [pattern, replacement] of ARABIC_TO_KURDISH_REPLACEMENTS) {
+      result = result.replace(pattern, replacement);
     }
     return result;
   }
 
   private convertEnglishLayoutToKurdish(text: string): string {
-    return text
-      .split('')
-      .map(char => ENGLISH_TO_KURDISH_LAYOUT[char] || char)
-      .join('');
+    // Single pass without splitting string
+    let result = '';
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      result += ENGLISH_TO_KURDISH_LAYOUT[char] || char;
+    }
+    return result;
   }
 
   private filterText(text: string): string {
-    let allowed = KURDISH_SORANI_33_LETTERS;
-    if (this.options.allowDigits) allowed += '0123456789٠١٢٣٤٥٦٧٨٩';
-    if (this.options.allowPunctuation) allowed += '.,;:!?()\\-\"\'\'،؛؟«»[]{}';
-    if (this.options.allowSpaces) allowed += ' \t\n';
-
-    const allowedSet = new Set(allowed);
-    const emojiMatches = this.options.allowEmojis ? text.match(EMOJI_REGEX) || [] : [];
-
-    let filtered = text
-      .replace(EMOJI_REGEX, '※')
-      .split('')
-      .filter(char => char === '※' || allowedSet.has(char))
-      .join('');
-
-    if (this.options.allowEmojis) {
-      let emojiIndex = 0;
-      filtered = filtered.replace(/※/g, () => emojiMatches[emojiIndex++] || '');
-    } else {
-      filtered = filtered.replace(/※/g, '');
+    const allowedSet = this.allowedSet!;
+    
+    // Single pass: filter characters without splitting string
+    let result = '';
+    
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      if (allowedSet.has(char)) {
+        result += char;
+      }
     }
 
-    return filtered;
+    return result;
   }
 
   private escapeRegExp(string: string): string {
@@ -179,5 +201,6 @@ export class KurdishProcessor {
 
   updateOptions(newOptions: Partial<KurdishProcessorOptions>): void {
     this.options = { ...this.options, ...newOptions };
+    this.rebuildAllowedSet();
   }
 }

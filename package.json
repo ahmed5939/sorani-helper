@@ -1,10 +1,17 @@
 {
-  "name": "@ahmed5939/sorani-helper",
-  "version": "1.0.3",
+  "name": "@ahmed5938/sorani-helper",
+  "version": "1.0.4",
   "description": "TypeScript library for processing Central Kurdish (Sorani) text: Arabic-to-Kurdish conversion, keyboard layout mapping, validation, and input handling.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "type": "commonjs",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "import": "./lib/index.js"
+    }
+  },
   "files": [
     "lib/**/*",
     "README.md",
@@ -12,7 +19,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "npm test",
+    "test": "bun test",
     "test:ci": "echo 'Build successful - tests run locally with Bun'",
     "prepublishOnly": "npm run build && npm run test:ci",
     "lint": "echo 'No linter configured' && exit 0",
